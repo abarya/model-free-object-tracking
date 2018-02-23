@@ -65,7 +65,7 @@ def mask_bg(object_window,img) :
 	img[y:y+h,x:x+w]=0
 	#print object_window
 	#print x_bg,y_bg,x_bg1,y_bg1,img.shape
-	bg_img=img[y_bg:y_bg1,x_bg:x_bg1]
+	bg_img=img[int(y_bg):int(y_bg1),int(x_bg):int(x_bg1)]
 	#cv2.imshow("masked_background",bg_img)
 	#cv2.waitKey(0)
 	#cv2.destroyAllWindows()
@@ -209,7 +209,7 @@ if __name__ == "__main__":
 	if (len(argument)<2) :
 		print "\n \n provide an image as input\n\n"
 		if var==1 :
-			folder_name="/media/arya/54E4C473E4C458BE/Users/hp/Documents/object-tracking/vot14/car"
+			folder_name="vot14/car"
 			image=cv2.imread(folder_name +"/00000001.jpg")
 			newpath="/media/arya/54E4C473E4C458BE/Users/hp/Documents/object-tracking/result_trellis"
 			if not os.path.exists(newpath) :
@@ -262,6 +262,7 @@ if __name__ == "__main__":
 		i=i+1
 
 	cv2.imshow("frame",frame)
+	cv2.imwrite("distractor+object.png",frame)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()	
 	#############
@@ -287,12 +288,12 @@ if __name__ == "__main__":
 	color_map_dist,Prob_dist=likelihood_map((hist_obj,hist_D),image)# call likelihood function for obj-dist model
 
 	#final_map = color_map_dist.astype('float32')*lamda + color_map_surr.astype('float32')*(1-lamda)
-	Prob_comb=Prob_surr*(1-lamda)+Prob_dist*lamda
+	Prob_comb=Prob_surr*(1)#+Prob_dist*lamda
 	final_map=Prob_comb*255
 	color_map_final=final_map.astype('uint8')
 	color_map_final=cv2.applyColorMap(color_map_final, cv2.COLORMAP_JET)
 	cv2.imshow("obj-surr model",color_map_surr)
-	cv2.imshow("distractor-aware model",color_map_dist)
+	#cv2.imshow("distractor-aware model",color_map_dist)
 	cv2.imshow("combined",color_map_final)
 	cv2.imshow("original_frame",frame)
 	cv2.waitKey(0)	
@@ -301,15 +302,15 @@ if __name__ == "__main__":
 	#prob as per bin no.
 
 	prob_S=prob_obj(hist_obj,hist_bg)
-	prob_D=prob_obj(hist_obj,hist_D)
-	prob_comb=prob_D*lamda+prob_S*(1-lamda)
+	#prob_D=prob_obj(hist_obj,hist_D)
+	prob_comb=prob_S*(1)
 
 	path, dirs, files = os.walk(folder_name).next()
 	num_images = len(files)
 
 	filenames=["%08d" % number for number in range(num_images)]
-
 	i=2
+	print "arya"
 	while(i<num_images+1) :
 		t=time.time()
 		# var variable is 1 when reading from a image files..if reading from a video set var=0 
@@ -318,7 +319,7 @@ if __name__ == "__main__":
 		else :	
 			ret,new_img=cap.read()
 
-		if(new_img==None) :
+		if(new_img.all()==None) :
 			break	
 
 		new_frame=copy.deepcopy(new_img)
@@ -498,5 +499,7 @@ if __name__ == "__main__":
 		object_window=(x,y,w,h)
 		cv2.rectangle(new_img,(x,y),(x1,y1),(0, 255, 0), 2)
 		cv2.imshow("new_img",new_img)
-		cv2.waitKey(10)
+		k=cv2.waitKey(10)& 0xFF
+		if k==27:
+			break
 		i=i+1
