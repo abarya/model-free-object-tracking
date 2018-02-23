@@ -1,8 +1,8 @@
 ''' This is the implementation of the paper-"In Defense of Color-based Model-free Tracking" by H.Possegger
-	If you wish to use this code-then you may edit a couple of lines in the beginning of the main function 
-	and some lines near line 310 as per how you get the raw frames for object-tracking.
-	If you have any suggestions/edits for this then do let me know.
-	Created by Abhishek Arya
+    If you wish to use this code-then you may edit a couple of lines in the beginning of the main function 
+    and some lines near line 310 as per how you get the raw frames for object-tracking.
+    If you have any suggestions/edits for this then do let me know.
+    Created by Abhishek Arya
 '''
 
 # Size of surroundings has been kept twice the object size
